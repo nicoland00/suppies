@@ -1,0 +1,246 @@
+<div style="background:white;">
+  <div class="questions-container color-{{ section.settings.color_scheme }}">
+    <div class="questions-column">
+      {% for i in (1..3) %}
+        {% capture question_key %}question_{{ i }}{% endcapture %}
+        {% capture answer_key %}answer_{{ i }}{% endcapture %}
+        <div class="questions-collapsible-row">
+          <button class="questions-collapsible">
+            <span class="questions-text">{{ section.settings[question_key] }}</span>
+            <span class="plus-icon">+</span>
+          </button>
+          <div class="content1">
+            <p class="answer-text">{{ section.settings[answer_key] }}</p>
+          </div>
+        </div>
+        <div class="separator"></div> <!-- Separator line -->
+      {% endfor %}
+    </div>
+    
+    <div class="questions-column">
+      {% for i in (4..6) %}
+        {% capture question_key %}question_{{ i }}{% endcapture %}
+        {% capture answer_key %}answer_{{ i }}{% endcapture %}
+        <div class="questions-collapsible-row">
+          <button class="questions-collapsible">
+            <span class="question-text">{{ section.settings[question_key] }}</span>
+            <span class="plus-icon">+</span>
+          </button>
+          <div class="questions-content1">
+            <p class="answer-text">{{ section.settings[answer_key]}}</p>
+          </div>
+        </div>
+        <div class="separator"></div> <!-- Separator line -->     
+      {% endfor %}
+    </div>
+  </div>
+</div>
+  
+<style>
+.questions-section {
+  display: flex;
+  flex-direction: column; /* Change to column to accommodate the color selector */
+  width: 100%;
+  margin-top: -80px; /* Adjust this value to control the overlap */
+  z-index:1;
+}
+
+}
+
+.color-scheme-selector {
+  margin-bottom: 20px; /* Space below the color selector */
+}
+
+.questions-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 70%;
+  margin: 0 auto;
+  position: relative;
+}
+
+.questions-column {
+  flex: 1;
+  padding: 10px;
+  margin: 0 5px;
+  box-sizing: border-box;
+}
+
+.questions-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+}  
+
+.questions-collapsible-row {
+  margin-bottom: 10px;
+  background-color:white;
+}
+
+.questions-collapsible {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 10px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  font-size: 18px;
+  font-weight: bold;
+  background: white;
+  color: black;
+}
+
+.separator {
+  height: 2px;
+  background-color: black;
+}
+  
+.question-text {
+  flex-grow: 1; /* Takes remaining space */
+  font-family: var(--font-body-family);
+  font-size: 0.9em;
+}
+
+.plus-icon {
+  margin-left: 10px; /* Space between text and icon */
+  font-weight: bold; /* Bold text for plus icon */
+  font-size: 20px; /* Larger font size for plus icon */
+}
+
+.answer-text {
+  font-size: 14px; /* Smaller font size for answers */
+}
+
+.questions-content1 {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  font-size:0.8em;
+}
+
+
+/* Mobile Styles */
+@media (max-width: 750px) {
+  .questions-container {
+    flex-direction: column; /* Stack the columns vertically */
+    width: 80%; /* Full width on mobile */
+  }
+
+  .questions-column {
+    width: 100%; /* Full width for each column */
+    margin: 0; /* Remove margin between columns */
+    padding: 0; /* Adjust padding as needed */
+  }
+
+  .questions-ollapsible-row {
+    width: 100%; /* Ensure collapsible rows fill the width */
+  }
+
+  .separator {
+    width: 100%; /* Ensure separator lines fill the width */
+  }
+}
+
+</style>
+
+<script>
+document.querySelectorAll('.questions-collapsible').forEach(button => {
+  button.addEventListener('click', () => {
+    button.classList.toggle('active');
+    const content = button.nextElementSibling;
+    if (content.style.display === "block") {
+      content.style.display = "none";
+    } else {
+      content.style.display = "block";
+    }
+  });
+});
+</script>
+
+{% schema %}
+{
+  "name": "Questions",
+  "settings": [
+    {
+      "type": "text",
+      "id": "question_1",
+      "label": "Question 1"
+    },
+    {
+      "type": "richtext",
+      "id": "answer_1",
+      "label": "Answer to Question 1"
+    },
+    {
+      "type": "text",
+      "id": "question_2",
+      "label": "Question 2"
+    },
+    {
+      "type": "richtext",
+      "id": "answer_2",
+      "label": "Answer to Question 2"
+    },
+    {
+      "type": "text",
+      "id": "question_3",
+      "label": "Question 3"
+    },
+    {
+      "type": "richtext",
+      "id": "answer_3",
+      "label": "Answer to Question 3"
+    },
+    {
+      "type": "text",
+      "id": "question_4",
+      "label": "Question 4"
+    },
+    {
+      "type": "richtext",
+      "id": "answer_4",
+      "label": "Answer to Question 4"
+    },
+    {
+      "type": "text",
+      "id": "question_5",
+      "label": "Question 5"
+    },
+    {
+      "type": "richtext",
+      "id": "answer_5",
+      "label": "Answer to Question 5"
+    },
+    {
+      "type": "text",
+      "id": "question_6",
+      "label": "Question 6"
+    },
+    {
+      "type": "richtext",
+      "id": "answer_6",
+      "label": "Answer to Question 6"
+    },
+      {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-8"
+    }
+  ],
+    
+  "presets": [
+    {
+      "name": "Questions Section",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}
+
+

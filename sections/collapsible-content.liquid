@@ -1,0 +1,427 @@
+{{ 'component-accordion.css' | asset_url | stylesheet_tag }}
+{{ 'collapsible-content.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="color-{{ section.settings.color_scheme }} gradient">
+  <div class="collapsible-content collapsible-{{ section.settings.layout }}-layout isolate{% if section.settings.layout == 'section' %} page-width{% elsif section.settings.layout == 'none' %} content-container content-container--full-width{% endif %}">
+    <div class="collapsible-content__wrapper section-{{ section.id }}-padding{% if section.settings.layout == 'section' %} content-container color-{{ section.settings.container_color_scheme }} gradient{% endif %}">
+      <div class="{% if section.settings.image == blank %}collapsible-content-wrapper-narrow{% else %}page-width{% endif %}">
+        <div
+          class="collapsible-content__header{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+          style="text-align: {{ section.settings.heading_alignment }};"
+        >
+          {%- if section.settings.caption != blank -%}
+            <p class="caption-with-letter-spacing">
+              {{ section.settings.caption | escape }}
+            </p>
+          {% endif %}
+          {%- if section.settings.heading != blank -%}
+            <h2 class="collapsible-content__heading inline-richtext {{ section.settings.heading_size }}">
+              {{ section.settings.heading }}
+            </h2>
+          {%- else -%}
+            <h2 class="visually-hidden">{{ 'accessibility.collapsible_content_title' | t }}</h2>
+          {% endif %}
+        </div>
+        <!--* TWO IMAGES PART -->
+
+        <!--* TWO IMAGES PART WITH TEXT -->
+
+        <div class="two-images-grid">
+          <div class="grid grid--2-col">
+            <!-- First image and text -->
+            <div class="grid__item">
+              {%- if section.settings.image_first != blank -%}
+                <div class="image-container">
+                  {{
+                    section.settings.image_first
+                    | image_url: width: 1600
+                    | image_tag: alt: 'Image 1'
+                  }}
+                </div>
+              {%- endif -%}
+              <!-- Display the first text under the image -->
+              {%- if section.settings.first_undertext != blank -%}
+                <p class="image-undertext">{{ section.settings.first_undertext }}</p>
+              {%- endif -%}
+            </div>
+        
+            <!-- Second image and text -->
+            <div class="grid__item">
+              {%- if section.settings.image_second != blank -%}
+                <div class="image-container">
+                  {{
+                    section.settings.image_second
+                    | image_url: width: 1600
+                    | image_tag: alt: 'Image 2'
+                  }}
+                </div>
+              {%- endif -%}
+              <!-- Display the second text under the image -->
+              {%- if section.settings.second_undertext != blank -%}
+                <p class="image-undertext">{{ section.settings.second_undertext }}</p>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+
+
+        
+        <div class="grid grid--1-col grid--2-col-tablet collapsible-content__grid{% if section.settings.desktop_layout == 'image_second' %} collapsible-content__grid--reverse{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+          {%- if section.settings.image != blank -%}
+            <div class="grid__item collapsible-content__grid-item">
+              <div
+                class="collapsible-content__media collapsible-content__media--{{ section.settings.image_ratio }} media global-media-settings gradient"
+                {% if section.settings.image_ratio == 'adapt' %}
+                  style="padding-bottom: {{ 1 | divided_by: section.settings.image.aspect_ratio | times: 100 }}%;"
+                {% endif %}
+              >
+                {%- liquid
+                  assign padding_multiplier = 1
+                  if section.settings.layout == 'section'
+                    assign padding_multiplier = 2
+                  endif
+                  assign desktop_tablet_padding = 100 | times: padding_multiplier | append: 'px'
+                  assign mobile_padding = 30 | times: padding_multiplier | append: 'px'
+                -%}
+                {%- capture sizes -%}
+                  (min-width: {{ settings.page_width }}px) calc(({{ settings.page_width }}px - {{ desktop_tablet_padding }}) / 2),
+                  (min-width: 750px) calc((100vw - {{ desktop_tablet_padding }}) / 2),
+                  calc(100vw - {{ mobile_padding }})
+                {%- endcapture -%}
+                {{
+                  section.settings.image
+                  | image_url: width: 3200
+                  | image_tag:
+                    sizes: sizes,
+                    widths: '50, 75, 100, 150, 200, 300, 400, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3200'
+                }}
+              </div>
+            </div>
+          {% endif %}
+          <div class="grid__item">
+         {%- for block in section.blocks -%}
+          <div
+            class="accordion{% if section.settings.layout == 'row' %} content-container color-{{ section.settings.container_color_scheme }} gradient{% endif %}"
+            {{ block.shopify_attributes }}
+          >
+            <details
+              id="Details-{{ block.id }}-{{ section.id }}"
+              {% if section.settings.open_first_collapsible_row and forloop.first %}
+                open 
+              {% endif %}
+            >
+        
+              <!-- Use a flexbox container to align the image, text, and button -->
+              <summary id="Summary-{{ block.id }}-{{ section.id }}" class="collapsible-summary">
+                <div class="collapsible-row-flex-container">
+                  <!-- Image on the left -->
+                  {%- if block.settings.row_image != blank -%}
+                    <div class="collapsible-row-image-wrapper">
+                      <img src="{{ block.settings.row_image | image_url }}" alt="Collapsible row image" class="collapsible-row-image" />
+                    </div>
+                  {%- endif -%}
+        
+                  <!-- Text (heading) in the middle -->
+                  <h3 class="accordion__title inline-richtext h4 collapsible-row-text">
+                    {{ block.settings.heading | default: block.settings.page.title | escape }}
+                  </h3>
+        
+                  <!-- Button (down arrow) on the right -->
+                  <div class="collapsible-row-button">
+                    {% render 'icon-caret' %}
+                  </div>
+                </div>
+              </summary>
+        
+              <div
+                class="accordion__content rte"
+                id="CollapsibleAccordion-{{ block.id }}-{{ section.id }}"
+                role="region"
+                aria-labelledby="Summary-{{ block.id }}-{{ section.id }}"
+              >
+                {{ block.settings.row_content }}
+                {{ block.settings.page.content }}
+              </div>
+            </details>
+          </div>
+        {%- endfor -%}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<style>
+
+.grid-item{
+justify-content:center;
+}
+  
+.two-images-grid {
+  display: flex;
+  justify-content: center; /* Center the grid */
+  gap: 20px; /* Space between images */
+  max-width: 600px; /* Set a maximum width for the grid */
+  margin: 0 auto; /* Center the grid on the page */
+  padding-left:20px;
+}
+
+.two-images-grid .image-container {
+  flex: 0 1 auto;
+  max-width: 120px; /* Set maximum width for each image */
+  height: auto; /* Adjust height automatically */
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column; /* Stack image and text vertically */
+}
+
+.two-images-grid img {
+  width: 100%; /* Image will take the full width of the container */
+  height: auto; /* Maintain aspect ratio */
+  object-fit: cover; /* Cover the container while maintaining aspect ratio */
+}
+
+/* Style for the text below the images */
+.image-undertext {
+  text-align: center;
+  font-size: 18px; /* Adjust font size as needed */
+  color: #333; /* Adjust text color */
+  white-space: nowrap; /* Prevent text from wrapping to the next line */
+  overflow: visible; /* Hide any overflowed text */
+  max-width: none;
+}
+
+  
+.collapsible-summary {
+  padding: 5px;
+}
+
+.collapsible-row-flex-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.collapsible-row-image-wrapper {
+  flex: 0 0 auto;
+  max-width: 50px; /* Adjust the size of the image as needed */
+  margin-right: 15px;
+}
+
+.collapsible-row-image {
+  width: 100%;
+  height: auto;
+}
+
+.collapsible-row-text {
+  flex: 1; /* Allow the text to grow and take up available space */
+  margin-right: 15px;
+}
+
+.collapsible-row-button {
+  flex: 0 0 auto;
+  cursor: pointer;
+}
+  
+/* Ensure the button (down arrow) is properly aligned */
+.collapsible-row-button svg {
+  width: 24px;
+  height: 24px;
+}
+
+  @media screen and (max-width: 750px) {
+    .two-images-grid img {
+  width: 60%; /* Image will take the full width of the container */
+  height: auto; /* Maintain aspect ratio */
+  object-fit: cover; /* Cover the container while maintaining aspect ratio */
+  }
+
+    .image-undertext p{
+
+  }  
+  }
+
+</style>
+
+{% schema %}
+{
+  "name": "t:sections.collapsible_content.name",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "caption",
+      "label": "t:sections.collapsible_content.settings.caption.label"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "t:sections.collapsible_content.settings.heading.label",
+      "default": "t:sections.collapsible_content.settings.heading.default"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "t:sections.all.heading_size.options__1.label"
+        },
+        {
+          "value": "h1",
+          "label": "t:sections.all.heading_size.options__2.label"
+        }
+      ],
+      "default": "h1",
+      "label": "t:sections.all.heading_size.label"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_first",
+      "label": "First Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_second",
+      "label": "Second Image"
+    },
+    {
+      "type": "text",
+      "id": "first_undertext",
+      "label": "First Text"
+    },
+    {
+      "type": "text",
+      "id": "second_undertext",
+      "label": "Second Text"
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "t:sections.collapsible_content.settings.heading_alignment.label",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.collapsible_content.settings.heading_alignment.options__1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.collapsible_content.settings.heading_alignment.options__2.label"
+        },
+        {
+          "value": "right",
+          "label": "t:sections.collapsible_content.settings.heading_alignment.options__3.label"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_first_collapsible_row",
+      "default": false,
+      "label": "t:sections.collapsible_content.settings.open_first_collapsible_row.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.collapsible_content.settings.header.content"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collapsible_row",
+      "name": "t:sections.collapsible_content.blocks.collapsible_row.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "t:sections.collapsible_content.blocks.collapsible_row.settings.heading.default",
+          "label": "t:sections.collapsible_content.blocks.collapsible_row.settings.heading.label",
+          "info": "t:sections.collapsible_content.blocks.collapsible_row.settings.heading.info"
+        },
+        {
+          "type": "image_picker",
+          "id": "row_image",
+          "label":"Row Image" 
+        },
+         {
+          "type": "richtext",
+          "id": "row_content",
+          "label": "t:sections.collapsible_content.blocks.collapsible_row.settings.row_content.label"
+        },
+        {
+          "type": "page",
+          "id": "page",
+          "label": "t:sections.collapsible_content.blocks.collapsible_row.settings.page.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.collapsible_content.presets.name",
+      "blocks": [
+        {
+          "type": "collapsible_row"
+        },
+        {
+          "type": "collapsible_row"
+        },
+        {
+          "type": "collapsible_row"
+        },
+        {
+          "type": "collapsible_row"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,281 @@
+<div style="background:#f2fdf4;">
+  <div class="faq-container color-{{ section.settings.color_scheme }}">
+    <div class="faq-left">
+      <div class="faq-title">
+        {{ section.settings.faq_title }}
+      </div>
+      <a
+        href="#variant-selects-template--18559395004673__featured_product_hKr7HK"
+        id="scrollToImageText"
+        class="button button--primary"
+        style="width: 60%; font-size: 0.9em; "
+      >
+        {{ section.settings.faq_button_label }}
+      </a>
+    </div>
+
+    <div class="faq-right">
+      {% for i in (1..8) %}
+        {% capture question_key %}question_{{ i }}{% endcapture %}
+        {% capture answer_key %}answer_{{ i }}{% endcapture %}
+        <div class="collapsible-row">
+          <button class="collapsible">
+            <span class="question-text">{{ section.settings[question_key] }}</span>
+            <span class="plus-icon">+</span>
+          </button>
+          <div class="content1">
+            <p class="answer-text">{{ section.settings[answer_key] }}</p>
+          </div>
+        </div>
+        <div class="separator"></div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('a[href="#variant-selects-template--18559395004673__featured_product_hKr7HK"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        const targetSection = document.querySelector('#variant-selects-template--18559395004673__featured_product_hKr7HK');
+        if (targetSection) {
+          targetSection.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          console.error("Target section not found.");
+        }
+      });
+    });
+  });
+
+document.querySelectorAll('.collapsible').forEach(button => {
+  button.addEventListener('click', () => {
+    button.classList.toggle('active');
+    const content = button.nextElementSibling;
+    if (content.style.display === "block") {
+      content.style.display = "none";
+    } else {
+      content.style.display = "block";
+    }
+  });
+});
+
+document.getElementById('scrollToImageText').addEventListener('click', function(event) {
+  event.preventDefault();
+  const targetId = this.getAttribute('href').substring(1);
+  const targetElement = document.getElementById(targetId);
+  if (targetElement) {
+    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+});
+
+</script>
+
+<style>
+.faq-container {
+  display: flex;
+  justify-content: space-between;
+  width: 90%;
+  margin: 0 auto;
+  position: relative;
+  padding-bottom: 60px;
+}
+
+.faq-left, .faq-right {
+  padding: 10px;
+}
+
+.faq-left{
+  width: 60%;
+}
+
+.faq-right {
+ width:90%;
+  padding-top:30px;
+}
+
+.faq-title {
+  color:black;
+}
+
+.collapsible-row {
+  margin-bottom: 10px;
+}
+
+.collapsible {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 10px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  font-size: 18px;
+  font-weight: bold;
+  background: #f2fdf4;
+  color: black;
+}
+}
+
+.separator {
+  height: 2px;
+  background-color: black;
+}
+
+.content1 {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  font-size: 0.7em;
+}
+
+.question-text{
+  font-size:0.9em;
+}
+
+
+/* Mobile Styles */
+@media (max-width: 750px) {
+  .faq-container {
+    flex-direction: column;
+    width: 80%;
+  }
+
+  .faq-left, .faq-right {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .faq-right{
+    padding-top:15px;
+  }
+
+  .collapsible-row {
+    width: 100%;
+  }
+
+  .separator {
+    width: 100%;
+  }
+
+  .faq-title{
+  text-align: center;
+  }
+}
+</style>
+
+
+{% schema %}
+{
+  "name": "FAQ Section",
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "faq_title",
+      "label": "FAQ Title",
+      "default": "<h3>Your FAQ Title Here</h3>"
+    },
+    {
+      "type": "text",
+      "id": "faq_button_label",
+      "label": "Button Label",
+      "default": "Learn More"
+    },
+    {
+      "type": "text",
+      "id": "question_1",
+      "label": "Question 1"
+    },
+    {
+      "type": "richtext",
+      "id": "answer_1",
+      "label": "Answer to Question 1"
+    },
+    {
+      "type": "text",
+      "id": "question_2",
+      "label": "Question 2"
+    },
+    {
+      "type": "richtext",
+      "id": "answer_2",
+      "label": "Answer to Question 2"
+    },
+    {
+      "type": "text",
+      "id": "question_3",
+      "label": "Question 3"
+    },
+    {
+      "type": "richtext",
+      "id": "answer_3",
+      "label": "Answer to Question 3"
+    },
+    {
+      "type": "text",
+      "id": "question_4",
+      "label": "Question 4"
+    },
+    {
+      "type": "richtext",
+      "id": "answer_4",
+      "label": "Answer to Question 4"
+    },
+      {
+      "type": "text",
+      "id": "question_5",
+      "label": "Question 5"
+    },
+    {
+      "type": "richtext",
+      "id": "answer_5",
+      "label": "Answer to Question 5"
+    },
+    {
+      "type": "text",
+      "id": "question_6",
+      "label": "Question 6"
+    },
+    {
+      "type": "richtext",
+      "id": "answer_6",
+      "label": "Answer to Question 6"
+    },
+    {
+      "type": "text",
+      "id": "question_7",
+      "label": "Question 7"
+    },
+    {
+      "type": "richtext",
+      "id": "answer_7",
+      "label": "Answer to Question 7"
+    },
+    {
+      "type": "text",
+      "id": "question_8",
+      "label": "Question 8"
+    },
+    {
+      "type": "richtext",
+      "id": "answer_8",
+      "label": "Answer to Question 8"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color Scheme",
+      "default": "scheme-8"
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ Section",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,561 @@
+<div class="grid-section" style="background-color: {{ section.settings.background_color }}; color: {{ section.settings.text_color }};" >
+  {%- for block in section.blocks -%}
+  {% if forloop.index == 1 %}
+            <div class="div1-responsive">
+             <div class="grid-image">
+            {% if block.settings.image contains 'Asset_1.svg' %}
+                  <img src="{{ block.settings.image | image_url }}" alt="{{ block.settings.title }}" class="hover-trigger svg-shadow" />
+                {% endif %}
+          </div>   
+              <div class="grid-content-responsive">
+          <h3>{{ block.settings.title }}</h3>
+          <p class="expandable">{{ block.settings.text }}</p>
+        </div>
+        </div>
+          {% endif %}
+           
+  {%- endfor -%}
+  <div class="parent">
+    {%- for block in section.blocks -%}
+      <div class="div{{ forloop.index }}">
+        {% if block.settings.image != blank %}
+          {% if forloop.index == 1 %}
+            <div>
+             <div class="grid-image">
+            {% if block.settings.image contains 'Asset_1.svg' %}
+                  <img src="{{ block.settings.image | image_url }}" alt="{{ block.settings.title }}" class="hover-trigger svg-shadow" />
+                {% endif %}
+          </div>
+            </div>
+          {% endif %}
+          {% if forloop.index != 1 %}
+          <div class="grid-image">
+            <img src="{{ block.settings.image | image_url }}" alt="{{ block.settings.title }}" class="hover-trigger" />
+          </div>
+        {% endif %}
+        {% endif %}
+        <div class="grid-content">
+          <h3>{{ block.settings.title }}</h3>
+          <p class="expandable">{{ block.settings.text }}</p>
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  // Select all div elements except div1
+  const expandableDivs = document.querySelectorAll('.parent > div:not(.div1)');
+
+  expandableDivs.forEach(div => {
+    div.addEventListener('click', function() {
+      // Find the expandable content within this div
+      const expandableContent = div.querySelector('.expandable');
+      
+      // Toggle the 'expanded' class on the expandable content
+      if (expandableContent) {
+        expandableContent.classList.toggle('expanded');
+      }
+    });
+  });
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+  // Create an IntersectionObserver
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const glowingText = entry.target.querySelector('h3');
+
+      // Check if the section is intersecting (visible in the viewport)
+      if (entry.isIntersecting) {
+        glowingText.classList.add('glowing-animation');
+        return; // Exit if the class is added
+      }
+
+      // Remove the glowing class if not in view
+      glowingText.classList.remove('glowing-animation');
+    });
+  });
+
+  // Observe the .div1-responsive element
+  const div1Responsive = document.querySelector('.div1-responsive');
+  if (div1Responsive) {
+    observer.observe(div1Responsive);
+  }
+
+  // Observe all h3 elements within .parent as well
+  const parentH3s = document.querySelectorAll('.parent h3');
+  parentH3s.forEach(h3 => observer.observe(h3.closest('div')));
+});
+
+</script>
+
+
+<style>
+  
+/* Expandable text effect */
+.expandable {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.5s ease-in-out;
+  font-size:0.8em;
+}
+
+/* When expanded, set max-height high enough to show content */
+.expandable.expanded {
+  max-height: 200px; /* Adjust as per content length */
+}
+
+.div1-responsive {
+  display:none;
+}
+
+.grid-content-reponsive h3{
+    display: none;
+  }
+  
+/*SVG filter */
+.hover-trigger svg-shadow {
+.svg-shadow {
+  margin: 2rem;
+  
+  &:hover {
+    filter: url(#shadow);
+  }
+}
+
+/* Shadow filter */
+svg {
+  width: 100px;
+  height: 100px;
+}
+
+div {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+filter {
+  /* SVG shadow filter definition */
+  <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+    <feDropShadow dx="0" dy="10" stdDeviation="5" flood-color="rgba(0,0,0,0.5)" />
+  </filter>
+  }
+}
+
+/*SVG end */
+
+
+/* Div positioning */
+  .div1 { 
+  -ms-transform: translateY(-50%);
+  grid-area: 1 / 2 / 3 / 3; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Keep the content centered vertically */
+  margin-bottom:50%;
+    
+  div{
+    grid-area: 1 / 2 / 3 / 3; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 33%;
+    position: absolute;
+  }
+}
+
+/* Align the content at the top for the other divs */
+.div2, .div3, .div4, .div5 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Align the content at the top */
+}
+
+
+
+/* Image size for div1 */
+.div1 .grid-item img {
+  max-width: 120%; /* Larger image for div1 */
+  cursor: pointer;
+  
+}
+
+@keyframes floating {
+  from {
+    padding-bottom:60px;
+  }
+  to {
+    padding-bottom:27px;
+  }
+}
+
+.div1 .grid-image {
+  display: flex;
+  animation: floating 2s linear 0s infinite normal;
+  animation-direction: alternate-reverse;
+  margin-top:20%;
+  }
+
+.div1 .grid-image img{
+  
+  }
+
+
+.div1 .grid-content{
+  top: 57%;
+  width: 200px;
+}
+
+.grid-item img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* General image styling */
+.grid-image {
+  width: 55%;
+}
+
+.grid-image img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Expandable text effect */
+.expandable {
+  overflow: hidden;
+  max-height: 0;
+  line-height: 2em;
+  transition: max-height 0.5s ease-in-out;
+}
+
+/* When hovering over the image in div1, reveal text in other divs */
+.div1:hover ~ .div2 .expandable,
+.div1:hover ~ .div3 .expandable,
+.div1:hover ~ .div4 .expandable,
+.div1:hover ~ .div5 .expandable {
+  max-height: 200px; /* Adjust height as per the content length */
+}
+
+.grid-content h3 {
+  font-size: 1.5em;
+  text-align: center;
+  font-weight: bold;
+  margin: 0; /* Remove margin on top and bottom */
+  padding: 0; /* Remove padding on top and bottom */
+}
+
+  font-weight: bold;
+  
+grid-content-responsive h3{
+  font-size: 1.5em;
+  text-align: center;
+  font-weight: bold;
+  margin: 0; /* Remove margin on top and bottom */
+  padding: 0; /* Remove padding on top and bottom */
+}  
+
+.expandable {
+  overflow: hidden;
+  color: #000;   
+  line-height: 1.5; /* Adjust line-height for better spacing */
+  transition: all .5s ease-in-out;
+  height: auto; /* Allow height to adjust automatically */
+  max-width: calc(100% - 20px); /* Adjust for the gap (20px is an example) */
+  margin: 0 10px; /* Add horizontal margins to prevent touching edges */
+}
+
+
+.grid-content p {
+  text-align: center;
+  margin: 0; /* Remove any margin below paragraph */
+  padding: 0; /* Remove padding */
+}
+
+
+/* Section Padding */
+.grid-section {
+  padding-top: 0px; /* Adjust the padding as needed */
+  position: relative; /* To handle the z-index */
+  padding-bottom:35px;
+}
+
+.parent {
+  display: grid;
+  grid-template-columns: repeat(3, 1.5fr);
+  grid-template-rows: auto; /* Let the rows adjust to the content */
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+  width: 70%; /* Set the grid width to be smaller */
+  margin: 0 auto; /* Center the grid on the page */
+}
+
+
+/* Ensure the grid stays centered on mobile */
+@media (max-width: 8px) {
+  .parent {
+    width: 100%; /* Make it full width on mobile */
+    display: flex;
+    flex-direction:column;
+  }
+}
+
+/*mobileeeeeeeeeeeeee*/
+@media (max-width: 749px) {
+  .parent {
+    margin: 0px;
+    width: 100%; /* Make it full width on mobile */
+    display: grid; /* Use grid layout */
+    grid-template-columns: repeat(2, 1fr); /* Create two columns */
+    grid-template-rows: repeat(2, 1fr); /* Create two rows */
+    grid-gap: 0; /* Remove gaps */
+    padding-left:10px;
+    padding-right:10px;
+  }
+
+  .div1-responsive {
+    display: flex;
+    justify-content: center;
+  }
+
+  .grid-content-responsive {
+    display: flex;
+  }
+
+  .div1 {
+    display: none; /* Hide div1 on mobile */
+  }
+
+  /* Position div2, div3, div4, and div5 in their respective corners */
+  .div2 {
+    grid-column: 1;
+    grid-row: 1; /* Top-left corner */
+  }
+
+  .div3 {
+    grid-column: 2;
+    grid-row: 1; /* Top-right corner */
+  }
+
+  .div4 {
+    grid-column: 1;
+    grid-row: 2; /* Bottom-left corner */
+  }
+
+  .div5 {
+    grid-column: 2;
+    grid-row: 2; /* Bottom-right corner */
+  }
+
+  /* Show paragraphs without hovering or clicking */
+  .expandable {
+    max-height: none; /* Allow paragraphs to be fully visible */
+    overflow: visible; /* Prevent overflow hidden */
+    display: block; /* Ensure it's a block element */
+    
+  }
+
+  .grid-content h3 {
+  font-size: 1em; /* Smaller font size for h3 */
+  text-align: center;
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+  }
+
+.grid-content p {
+  font-size: 0.7em; /* Smaller font size for paragraphs */
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  width:100%;
+  }
+
+      .div1-responsive {
+    display: flex;
+    flex-direction: column; /* Stack the image, title, and text vertically */
+    align-items: center; /* Center the content horizontally */
+    justify-content:center;
+  }
+
+  .grid-image {
+    width: 40%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .div1-responsive .grid-image img {
+    padding-right:20%;
+    padding-left:20%;
+    width: 90%; /* Make the image take full width */
+  }
+
+  .div1-responsive .grid-content-responsive h3{
+    font-size: 1.2em;
+        text-align: center;
+        font-weight: bold;
+        margin: 0;
+        padding: 0;
+        color: #2cb67d;
+  }
+
+    /* Glowing effect animation */
+  @keyframes glowing {
+    0% {
+      text-shadow: none
+      color: white;
+    }
+    50% {
+      text-shadow: 0 0 20px #b1f2d7, 0 0 30px #b1f2d7, 0 0 40px #6dd6aa, 0 0 50px #6dd6aa;
+      color: #2cb67d;
+    }
+    100% {
+      text-shadow: 0 0 10px #b1f2d7, 0 0 20px #b1f2d7, 0 0 30px #b1f2d7, 0 0 40px #6dd6aa;
+      color: #2cb67d;
+    }
+  }
+  
+  /* Apply the glowing-animation to the h3 elements */
+  h3.glowing-animation {
+    animation: glowing 6s infinite alternate;
+  }
+  
+  /* Color change on hover for .parent h3 */
+  .div1:hover ~ .div2 h3,
+  .div1:hover ~ .div3 h3,
+  .div1:hover ~ .div4 h3,
+  .div1:hover ~ .div5 h3 {
+    color: #2cb67d;
+    text-shadow: 0 0 10px #b1f2d7,
+                 0 0 20px #b1f2d7,
+                 0 0 30px #b1f2d7,
+                 0 0 40px #6dd6aa;
+    transition: color 0.5s ease, text-shadow 2s ease;
+  }
+
+
+}
+
+/* Ensure expandable text fits within the grid */
+.expandable {
+  max-width: calc(100%); /* Adjust for the gap */
+  margin: 0 10px; /* Maintain margins to prevent edge touching */
+  text-align: left; /* Align text left if needed */
+}
+
+@media (max-width: 1024px) {
+  .parent{
+   flex-direction:column; 
+  }
+}
+
+.div1 .grid-content h3 {
+    color: #2cb67d;
+    font-size: 1.8em;
+}
+
+/* hover texts transitions */
+.div2 h3,
+.div3 h3,
+.div4 h3,
+.div5 h3 {
+  transition: color 0.5s ease, text-shadow 0.5s ease;
+}
+
+.div1:hover ~ .div2 h3,
+.div1:hover ~ .div3 h3,
+.div1:hover ~ .div4 h3,
+.div1:hover ~ .div5 h3 {
+  
+  color: #2cb67d;
+  text-shadow: 0 0 10px #b1f2d7,
+               0 0 20px #b1f2d7,
+               0 0 30px #b1f2d7,
+               0 0 40px #6dd6aa;
+} 
+  
+.div1:hover{
+
+  h3{
+  
+  color: #2cb67d;
+  text-shadow: 0 0 10px #b1f2d7,
+               0 0 20px #b1f2d7,
+               0 0 30px #b1f2d7,
+               0 0 40px #6dd6aa;
+  }
+}
+
+
+</style>
+
+{% schema %}
+{
+    "name": "Grid Section",
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#000000"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "grid_item",
+      "name": "Grid Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Title goes here"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Description",
+          "default": "Description goes here"
+        },
+        {
+          "type": "color_scheme",
+          "id": "color_scheme",
+          "label": "t:sections.all.colors.label",
+          "default": "scheme-1"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Grid Layout",
+      "blocks": [
+        { "type": "grid_item" },
+        { "type": "grid_item" },
+        { "type": "grid_item" },
+        { "type": "grid_item" },
+        { "type": "grid_item" }
+      ]
+    }
+  ]
+}
+{% endschema %}

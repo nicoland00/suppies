@@ -1,0 +1,277 @@
+{%- schema -%}
+{
+  "name": "Carousel",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Carousel Heading"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link",
+      "default": "/collections/all"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Shop Now"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+   {
+  "name": "Default Carousel",
+  "category": "Carousel",
+  "settings": {},
+  "blocks": [
+      {
+      "type": "image",
+      "settings": {
+        "image": "shopify://shop_images/Artboard_4_copy.png",
+        "title": "Shield",
+        "link": "/collections/all"
+        }
+      },
+      {
+      "type": "image",
+      "settings": {
+        "image": "shopify://shop_images/Artboard_4_copy_2.png",
+        "title": "Emoji",
+        "link": "/collections/all"
+        }
+      },
+      {
+      "type": "image",
+      "settings": {
+        "image": "shopify://shop_images/Artboard_4.png",
+        "title": "Truck",
+        "link": "/collections/all"
+        }
+      },
+      {
+      "type": "image",
+      "settings": {
+        "image": "shopify://shop_images/Artboard_4_copy_4.png",
+        "title": "USA",
+        "link": "/collections/all"
+        }
+      },
+      {
+      "type": "image",
+      "settings": {
+        "image": "shopify://shop_images/Artboard_4_copy_3.png",
+        "title": "Plant",
+        "link": "/collections/all"
+        }
+      },
+      {
+      "type": "image",
+      "settings": {
+        "image": "shopify://shop_images/Artboard_4_copy_5.png",
+        "title": "Heart",
+        "link": "/collections/all"
+        }
+      }  
+    ]
+  }
+  ]
+}
+{%- endschema -%}
+
+<div class="scroller" data-direction="right" data-speed="fast">
+  <div class="scroller__inner">
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'image' -%}
+        <img src="{{ block.settings.image | img_url: 'master' }}" alt="{{ block.settings.image.alt | default: '' }}" />
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</div>
+
+<style>
+  .scroller {
+    width: 100vw; /* Full width of the screen */
+    height: 25vh; /* 1/4 of the screen height */
+    margin: 0 auto; /* Center horizontally */
+    background-color: black; /* Set full black background */
+    display: flex;
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center images horizontally */
+    overflow: hidden;
+    padding: 0; /* Remove padding */
+  }
+
+  .scroller__inner {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 5rem; /* Increase gap between images for more width */
+    justify-content: center; /* Center images horizontally */
+    align-items: center; /* Ensure inner content is centered vertically */
+  }
+
+/* Adjustments for Mobile */
+/* Adjustments for Mobile */
+@media (max-width: 768px) {
+  .scroller {
+    height: auto; /* Allow height to adjust on mobile */
+    padding: 20px; /* Add some padding if needed */
+  }
+
+  .scroller img {
+    max-height: none; /* Remove height restriction */
+    max-width: 100%; /* Limit width to container */
+    height: auto; /* Maintain aspect ratio */
+    width: auto; /* Allow width to adjust */
+    position: relative; /* Position relative to parent */
+    left: 50%; /* Center to the right */
+    transform: translateX(-50%) scale(1.8); /* Scale up and center */
+    z-index: 1; /* Bring to front */
+    margin: 0; /* Remove margin to allow overflow */
+  }
+
+  .scroller__inner {
+    overflow: visible; /* Allow inner content to overflow */
+    justify-content: flex-start; /* Start from the left */
+    padding: 0; /* Remove padding */
+  }
+}
+
+
+  .scroller img {
+    max-height: 100%; /* Adjust image height to fit the section */
+    max-width: 15vw; /* Restrict the width for proper display */
+    width: auto; /* Maintain aspect ratio */
+    filter: brightness(0) invert(1); /* Ensure images are white */
+  }
+
+  .scroller[data-animated="true"] {
+    overflow: hidden;
+  }
+
+  .scroller[data-animated="true"] .scroller__inner {
+    width: max-content;
+    animation: scroll var(--_animation-duration, 40s)
+      var(--_animation-direction, forwards) linear infinite;
+  }
+
+  .scroller[data-direction="right"] {
+    --_animation-direction: reverse;
+  }
+
+  .scroller[data-direction="left"] {
+    --_animation-direction: forwards;
+  }
+
+  .scroller[data-speed="fast"] {
+    --_animation-duration: 15s;
+  }
+
+  .scroller[data-speed="slow"] {
+    --_animation-duration: 60s;
+  }
+
+  @keyframes scroll {
+    to {
+      transform: translate(calc(-50% - 0.5rem));
+    }
+  }
+
+  /* General Styles */
+  :root {
+    --clr-neutral-100: hsl(0, 0%, 100%);
+    --clr-primary-100: hsl(205, 15%, 58%);
+    --clr-primary-400: hsl(215, 25%, 27%);
+    --clr-primary-800: hsl(217, 33%, 17%);
+    --clr-primary-900: hsl(218, 33%, 9%);
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    display: grid;
+    min-block-size: 100vh;
+    place-content: center;
+    font-family: system-ui;
+    font-size: 1.125rem;
+    background-color: black; /* Full body background is black */
+  }
+
+  .tag-list {
+    margin: 0;
+    padding-inline: 0;
+    list-style: none;
+  }
+
+  .tag-list li {
+    padding: 1rem;
+    background: var(--clr-primary-400);
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem -0.25rem var(--clr-primary-900);
+  }
+
+  /* Optional: add a hover effect for carousel items */
+  /*.scroller__inner img:hover {
+    transform: scale(1.05); /* Slight zoom effect */
+   /* transition: transform 0.3s ease;
+  } */
+</style>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const scrollers = document.querySelectorAll(".scroller");
+
+    // If a user hasn't opted in for reduced motion, then we add the animation
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      addAnimation();
+    }
+
+    function addAnimation() {
+      scrollers.forEach((scroller) => {
+        // add data-animated="true" to every .scroller on the page
+        scroller.setAttribute("data-animated", true);
+
+        // Make an array from the elements within .scroller-inner
+        const scrollerInner = scroller.querySelector(".scroller__inner");
+        const scrollerContent = Array.from(scrollerInner.children);
+
+        // For each item in the array, clone it
+        // add aria-hidden to it
+        // add it into the .scroller-inner
+        scrollerContent.forEach((item) => {
+          const duplicatedItem = item.cloneNode(true);
+          duplicatedItem.setAttribute("aria-hidden", true);
+          scrollerInner.appendChild(duplicatedItem);
+        });
+      });
+    }
+  });
+</script>

@@ -1,0 +1,247 @@
+<div class="quoteshow" id="Quoteshow-{{ section.id }}">
+  <div class="quoteshow__slides">
+    {%- for block in section.blocks -%}
+      <div class="quoteshow__slide" id="Quote-{{ section.id }}-{{ forloop.index }}" role="group" aria-roledescription="{{ 'sections.quoteshow.quote' | t }}" aria-label="{{ forloop.index }} {{ 'general.slider.of' | t }} {{ forloop.length }}">
+        <p class="quoteshow__quote">"{{ block.settings.quote_text }}"</p>
+        <p class="quoteshow__author">- {{ block.settings.quote_author }}</p>
+      </div>
+    {%- endfor -%}
+  </div>
+
+  <!-- Dots and Arrows -->
+  <div class="quoteshow__dots">
+    <span id="prev-arrow" class="quoteshow__arrow quoteshow__arrow--left">&#10094;</span>
+    
+    {%- for block in section.blocks -%}
+      <span class="dot" data-index="{{ forloop.index0 }}"></span>
+    {%- endfor -%}
+    
+    <span id="next-arrow" class="quoteshow__arrow quoteshow__arrow--right">&#10095;</span>
+  </div>
+</div>
+
+<style>
+  .quoteshow {
+    width: 100vw;
+    height: 20vh;
+    min-height: fit-content;
+    background-color: #1b6647;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    padding: 10px;
+  }
+
+  .quoteshow__slides {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    transition: transform 0.5s ease-in-out;
+    flex: 1;
+  }
+
+  .quoteshow__slide {
+    min-height: 100%;
+    display: none;
+    text-align: center;
+    color: white;
+  }
+
+  .quoteshow__quote {
+    font-size: 1.7rem;
+    font-style: italic;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-family: libelle_n4;
+  }
+
+  .quoteshow__author {
+    font-size: 1rem;
+    margin-bottom: 2px;
+  }
+
+  .quoteshow__dots {
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Vertically center the arrows and dots */
+    gap: 10px; /* Add space between arrows and dots */
+    margin-bottom: 10px; /* Space below the dots */
+    position: relative;
+  }
+
+  .dot {
+    height: 10px;
+    width: 10px;
+    margin: 0 5px;
+    background-color: white;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.3s;
+  }
+
+  .dot.active {
+    background-color: #2cb67D; /* Green for active dot */
+  }
+
+  .quoteshow__slide.active {
+    display: block;
+  }
+
+  /* Arrows */
+  .quoteshow__arrow {
+    cursor: pointer;
+    color: white;
+    font-size: 1.5rem;
+    padding: 0 15px; /* Horizontal padding for clickable space */
+    user-select: none;
+  }
+
+  .quoteshow__arrow--left {
+    order: -1; /* Ensure left arrow appears before dots */
+  }
+
+  .quoteshow__arrow--right {
+    order: 1; /* Ensure right arrow appears after dots */
+  }
+
+  @media (max-width: 768px) {
+    .quoteshow__quote {
+      font-size: 1.3rem;
+    }
+
+    .quoteshow__author {
+      font-size: 0.8rem;
+    }
+
+    .quoteshow__dots {
+      margin-bottom: 5px;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const slides = document.querySelectorAll('.quoteshow__slide');
+    const dots = document.querySelectorAll('.dot');
+    const prevArrow = document.getElementById('prev-arrow');
+    const nextArrow = document.getElementById('next-arrow');
+    let currentSlide = 0;
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.remove('active');
+        slide.style.transform = `translateX(${(i - index) * 100}%)`;
+      });
+      slides[index].classList.add('active');
+
+      // Update dots
+      dots.forEach((dot, i) => {
+        dot.classList.remove('active');
+        if (i === index) {
+          dot.classList.add('active');
+        }
+      });
+    }
+
+    function nextQuote() {
+      currentSlide = (currentSlide + 1) % slides.length;
+      showSlide(currentSlide);
+    }
+
+    function prevQuote() {
+      currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+      showSlide(currentSlide);
+    }
+
+    // Initial display
+    showSlide(currentSlide);
+
+    // Change slide every 7 seconds
+    const autoSlideInterval = setInterval(nextQuote, 7000);
+
+    // Manual slide changes with arrows
+    nextArrow.addEventListener('click', () => {
+      clearInterval(autoSlideInterval); // Stop auto-slide on manual interaction
+      nextQuote();
+    });
+
+    prevArrow.addEventListener('click', () => {
+      clearInterval(autoSlideInterval); // Stop auto-slide on manual interaction
+      prevQuote();
+    });
+  });
+</script>
+
+{%- schema -%}
+{
+  "name": "Quoteshow",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Customer Testimonials"
+    },
+    {
+      "type": "text", 
+      "id": "font_family",
+      "label": "Font Family",
+      "default": "Helvetica, Arial, sans-serif",
+      "info": "Enter the font family for quotes and authors."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "quote",
+      "name": "Quote",
+      "settings": [
+        {
+          "type": "text",
+          "id": "quote_text",
+          "label": "Quote Text",
+          "default": "This is a default quote."
+        },
+        {
+          "type": "text",
+          "id": "quote_author",
+          "label": "Quote Author",
+          "default": "Author"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Default Quoteshow",
+      "category": "Testimonials",
+      "blocks": [
+        {
+          "type": "quote",
+          "settings": {
+            "quote_text": "Amazing product, would highly recommend!",
+            "quote_author": "John Doe"
+          }
+        },
+        {
+          "type": "quote",
+          "settings": {
+            "quote_text": "Best purchase I've made all year!",
+            "quote_author": "Jane Smith"
+          }
+        },
+        {
+          "type": "quote",
+          "settings": {
+            "quote_text": "Exceptional quality and service.",
+            "quote_author": "Alice Johnson"
+          }
+        }
+      ]
+    }
+  ]
+}
+{%- endschema -%}
+

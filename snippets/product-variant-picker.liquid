@@ -1,0 +1,148 @@
+{% comment %}
+  Renders product variant-picker
+
+  Accepts:
+  - product: {Object} product object.
+  - block: {Object} passing the block information.
+  - product_form_id: {String} Id of the product form to which the variant picker is associated.
+  Usage:
+  {% render 'product-variant-picker', product: product, block: block, product_form_id: product_form_id %}
+{% endcomment %}
+{%- unless product.has_only_default_variant -%}
+  <variant-selects
+    id="variant-selects-{{ section.id }}"
+    data-section="{{ section.id }}"
+    {{ block.shopify_attributes }}
+  >
+    {%- for option in product.options_with_values -%}
+      {%- liquid
+        assign swatch_count = option.values | map: 'swatch' | compact | size
+        assign picker_type = block.settings.picker_type
+
+        if swatch_count > 0 and block.settings.swatch_shape != 'none'
+          if block.settings.picker_type == 'dropdown'
+            assign picker_type = 'swatch_dropdown'
+          else
+            assign picker_type = 'swatch'
+          endif
+        endif
+      -%}
+      {%- if picker_type == 'swatch' -%}
+        <fieldset class="js product-form__input product-form__input--swatch">
+          <legend class="form__label">
+            {{ option.name }}:
+            <span data-selected-value>
+              {{- option.selected_value -}}
+            </span>
+          </legend>
+          {% render 'product-variant-options',
+            product: product,
+            option: option,
+            block: block,
+            picker_type: picker_type
+          %}
+        </fieldset>
+      {%- elsif picker_type == 'button' -%}
+        <fieldset class="js product-form__input product-form__input--pill">
+          {% comment %} <legend class="form__label">{{ option.name }}</legend> {% endcomment %}
+          {% render 'product-variant-options',
+            product: product,
+            option: option,
+            index: forloop.index,
+            block: block,
+            picker_type: picker_type
+          %}
+        </fieldset>
+        <div style="display:flex; flex-direction:column;">
+          <div class="container__variant-info">
+            <svg stroke="currentColor" fill="#2CB67DFF" stroke-width="0" viewBox="0 0 16 16" role="presentation" 
+            style="height:100%" class="r-syn1ls" xmlns="http://www.w3.org/2000/svg"
+            data-gtm-vis-has-fired136015658_208="1">
+            <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" 
+            data-gtm-vis-has-fired136015658_208="1">
+            </path>
+            </svg>
+            <span>
+              {%- for variantValue in product.variants -%}
+                {%- if product.selected_or_first_available_variant.title == variantValue.title and forloop.index == 1 -%}
+                  1 pack every 4 weeks (60 gummies)
+                {%- elsif product.selected_or_first_available_variant.title == variantValue.title and forloop.index == 2 -%}
+                  2 packs every 4 weeks (120 gummies)
+                {%- endif -%}
+              {%- endfor -%}
+            </span>
+          </div>
+          <div class="container__variant-info">
+            <svg stroke="currentColor" fill="#2CB67DFF" stroke-width="0" viewBox="0 0 16 16" role="presentation" 
+            style="height:100%" class="r-syn1ls" xmlns="http://www.w3.org/2000/svg"
+            data-gtm-vis-has-fired136015658_208="1">
+            <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" 
+            data-gtm-vis-has-fired136015658_208="1">
+            </path>
+            </svg>
+            <span>
+              FREE avg 2-day shipping today
+            </span>
+          </div>
+          <div class="container__variant-info">
+            <svg stroke="currentColor" fill="#2CB67DFF" stroke-width="0" viewBox="0 0 16 16" role="presentation" 
+            style="height:100%" class="r-syn1ls" xmlns="http://www.w3.org/2000/svg"
+            data-gtm-vis-has-fired136015658_208="1">
+            <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" 
+            data-gtm-vis-has-fired136015658_208="1">
+            </path>
+            </svg>
+            <span>
+              Pause or cancel anytime
+            </span>
+          </div>
+          <div class="container__variant-info">
+            <svg stroke="currentColor" fill="#2CB67DFF" stroke-width="0" viewBox="0 0 16 16" role="presentation" 
+            style="height:100%" class="r-syn1ls" xmlns="http://www.w3.org/2000/svg"
+            data-gtm-vis-has-fired136015658_208="1">
+            <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" 
+            data-gtm-vis-has-fired136015658_208="1">
+            </path>
+            </svg>
+            <span>
+              30-day money back guarantee
+            </span>
+          </div>
+        </div>
+      {%- else -%}
+        <div class="product-form__input product-form__input--dropdown">
+          <label class="form__label" for="Option-{{ section.id }}-{{ forloop.index0 }}">
+            {{ option.name }}
+          </label>
+          <div class="select">
+            {%- if picker_type == 'swatch_dropdown' -%}
+              <span
+                data-selected-value
+                class="dropdown-swatch"
+              >
+                {% render 'swatch', swatch: option.selected_value.swatch, shape: block.settings.swatch_shape %}
+              </span>
+            {%- endif -%}
+            <select
+              id="Option-{{ section.id }}-{{ forloop.index0 }}"
+              class="select__select"
+              name="options[{{ option.name | escape }}]"
+              form="{{ product_form_id }}"
+            >
+              {% render 'product-variant-options',
+                product: product,
+                option: option,
+                block: block,
+                picker_type: picker_type
+              %}
+            </select>
+            {% render 'icon-caret' %}
+            
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+
+    <script type="application/json" data-selected-variant>{{ product.selected_or_first_available_variant | json }}</script>
+  </variant-selects>
+{%- endunless -%}
